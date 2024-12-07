@@ -1,7 +1,5 @@
 #include "List.hpp"
-#include <exception>
 #include <iostream>
-#include <ostream>
 
 using namespace std;
 
