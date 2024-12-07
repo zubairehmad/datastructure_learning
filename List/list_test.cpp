@@ -1,7 +1,6 @@
 #include <exception>
 #include <iostream>
 #include <ostream>
-#include <system_error>
 #include "List.hpp"
 
 using namespace std;
@@ -20,6 +19,19 @@ std::ostream& operator << (std::ostream& op, List<T> list) {
         op << "]";
     }
     return op;
+}
+
+void inputList(List<int>& list) {
+    int value = 0;
+
+    do {
+        cout << "\nEnter value to add in list (-1 to exit) : ";
+        cin >> value;
+
+        if (value != -1) {
+            list.add(value);
+        }
+    } while (value != -1);
 }
 
 template <typename T>
@@ -47,52 +59,53 @@ int main() {
 
     List<int> myList;
 
-    cout << "\nmyList = " << myList << endl;
+    inputList(myList);
+
+    cout << "\nmyList = " << myList;
     printInReverse<int>(myList);
 
-    myList.add(52);
-    myList.add(12);
-    myList.add(3285);
-    myList.add(628);
+    myList.end();
 
-    cout << "\nMy list after some insertion : " << myList << endl;
+    // Remove as many can be removed
+    try {
+        myList.remove();
+        myList.remove();
+        myList.remove();
+    } catch (const exception& e) { /* Just silent the exception */ }
+
+    cout << "\nMy list after some deletions from end: " << myList;
     printInReverse<int>(myList);
 
-    List<int> emptyList;
+    int val;
+    cout << "\nEnter any element to check whether its present: ";
+    cin >> val;
 
-    try {
-        cout << "\nTrying to move to start on empty list...\n";
-        emptyList.start();
-    } catch (const exception& e) {
-        cout << "Exception caught: " << e.what() << endl;
+    if (myList.find(val)) {
+        cout << val << " is present in the list!\n";
+
+        cout << "\nWith what value, you want to change it : ";
+        cin >> val;
+
+        myList.update(val);
+
+        cout << "\nMy List: " << myList << endl;
+
+    } else {
+        cout << val << " is not present in the list!\n";
     }
 
-    try {
-        cout << "\nTrying to move to end on empty list...\n";
-        emptyList.end();
-    } catch (const exception& e) {
-        cout << "Exception caught: " << e.what() << endl;
-    }
+    cout << "\nOn which index you want to jump to: ";
+    cin >> val;
 
     try {
-        cout << "\nTrying to move next in empty list...\n";
-        emptyList.next();
+        
+        myList.moveTo(val);
+
+        cout << "\nAt index " << val << ", the value here is : " << myList[val] << endl;
+
     } catch (const exception& e) {
-        cout << "Exception caught: " << e.what() << endl;
+        cout << "\nException caught: " << e.what() << endl;
     }
 
-    try {
-        cout << "\nTrying to move backward in empty list...\n";
-        emptyList.back();
-    } catch (const exception& e) {
-        cout << "Exception caught: " << e.what() << endl;
-    }
-
-    try {
-        cout << "\nTrying to get element from empty list...\n";
-        emptyList.get();
-    } catch (const exception& e) {
-        cout << "Exception caught: " << e.what() << endl;
-    }
     return 0;
 }
