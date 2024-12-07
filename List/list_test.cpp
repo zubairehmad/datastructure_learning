@@ -69,8 +69,7 @@ int main() {
     myList.remove();
     myList.remove();
     myList.remove();
-  } catch (const exception &e) { /* Just silent the exception */
-  }
+  } catch (const exception &e) { /* Just silent the exception */ }
 
   cout << "\nMy list after some deletions from end: " << myList;
   printInReverse<int>(myList);

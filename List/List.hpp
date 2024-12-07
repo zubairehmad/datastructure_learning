@@ -171,22 +171,19 @@ template <typename T> void List<T>::remove() {
 
 template <typename T> void List<T>::update(const T &newValue) {
   if (current == -1)
-    throw std::runtime_error(
-        "The list don't have any elements! Can't update current element!");
+    throw std::runtime_error("The list don't have any elements! Can't update current element!");
   list[current] = newValue;
 }
 
 template <typename T> void List<T>::start() {
   if (current == -1)
-    throw std::runtime_error(
-        "The list don't have any elements! Can't move to start!");
+    throw std::runtime_error("The list don't have any elements! Can't move to start!");
   current = 0;
 }
 
 template <typename T> void List<T>::end() {
   if (current == -1)
-    throw std::runtime_error(
-        "The list don't have any elements! Can't move to end!");
+    throw std::runtime_error("The list don't have any elements! Can't move to end!");
   current = size - 1;
 }
 
@@ -199,8 +196,7 @@ template <typename T> void List<T>::moveTo(size_t index) {
 template <typename T> bool List<T>::next() {
 
   if (current == -1)
-    throw std::runtime_error(
-        "The list don't have any element! Can't move forward!");
+    throw std::runtime_error("The list don't have any element! Can't move forward!");
 
   if (current == size - 1) {
     return false;
@@ -213,8 +209,7 @@ template <typename T> bool List<T>::next() {
 template <typename T> bool List<T>::back() {
 
   if (current == -1)
-    throw std::runtime_error(
-        "The list don't have any element! Can't move backward!");
+    throw std::runtime_error("The list don't have any element! Can't move backward!");
 
   if (current == 0) {
     return false;
