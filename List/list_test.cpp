@@ -90,19 +90,5 @@ int main() {
     cout << val << " is not present in the list!\n";
   }
 
-  cout << "\nOn which index you want to jump to: ";
-  cin >> val;
-
-  try {
-
-    myList.moveTo(val);
-
-    cout << "\nAt index " << val << ", the value here is : " << myList[val]
-         << endl;
-
-  } catch (const exception &e) {
-    cout << "\nException caught: " << e.what() << endl;
-  }
-
   return 0;
 }

@@ -17,9 +17,6 @@ public:
   // Returns the size of the list
   int length() const;
 
-  // Get the index at which, the current is pointing
-  size_t getCurrentIndex() const;
-
   // Returns the value at current index
   T get() const;
 
@@ -40,10 +37,6 @@ public:
   // don't have any elements
   void end();
 
-  // Moves the current pointer/marker to specified index. If the index is out of
-  // bounds then exception is thrown
-  void moveTo(size_t);
-
   // Moves the current pointer/marker 1 step forward. If it can't move next
   // (i.e, at the end of list) then false is returned otherwise true. If list
   // don't have any elements, then exception is thrown
@@ -57,9 +50,6 @@ public:
   // It moves the current marker to index at which, the given element is present
   // It returns true if element is present, otherwise false
   bool find(const T &);
-
-  // For reading only
-  const T &operator[](size_t) const;
 
   // Destrutor to deallocate the allocated memory
   ~List();
@@ -84,10 +74,6 @@ template <typename T> List<T>::List(const List<T> &other) {
 template <typename T> int List<T>::length() const {
   // Return the length/size of the list
   return size;
-}
-
-template <typename T> size_t List<T>::getCurrentIndex() const {
-  return current;
 }
 
 template <typename T> T List<T>::get() const {
@@ -186,12 +172,6 @@ template <typename T> void List<T>::end() {
   current = size - 1;
 }
 
-template <typename T> void List<T>::moveTo(size_t index) {
-  if (index < 0 || index > size - 1)
-    throw std::out_of_range("The given index is out of range!");
-  current = index;
-}
-
 template <typename T> bool List<T>::next() {
 
   if (current == -1)
@@ -230,12 +210,6 @@ template <typename T> bool List<T>::find(const T &elem) {
   }
   // The given element is not present in the list
   return false;
-}
-
-template <typename T> const T &List<T>::operator[](size_t index) const {
-  if (index < 0 || index > size - 1)
-    throw std::out_of_range("Invalid index is given!");
-  return list[index];
 }
 
 template <typename T> List<T>::~List() {
