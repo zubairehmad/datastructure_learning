@@ -96,17 +96,22 @@ template <typename T> void List<T>::add(const T &elem) {
     // Reallocate list with increased size
     list = new T[size + 1];
 
-    int i, j;
-    i = j = 0;
+    int oldListIndex = 0;
 
-    while (i < size) {
-      if (i == current) {
-        list[j] = elem;
-        ++j;
+    // Simply copy as long as oldListIndex < current
+    // If it is equal then insert the element and
+    // after that keep copying oldList at oldListIndex+1 in the new list.
+    while (oldListIndex < size) {
+      if (oldListIndex < current) {
+        list[oldListIndex] = temp[oldListIndex];
       }
-      list[j] = temp[i];
-      ++i;
-      ++j;
+      if (oldListIndex == current) {
+        list[oldListIndex] = elem;
+      }
+      if (oldListIndex >= current) {
+        list[oldListIndex+1] = temp[oldListIndex];
+      }
+      ++oldListIndex;
     }
 
     // Free the memory
@@ -133,25 +138,31 @@ template <typename T> void List<T>::remove() {
     // Reallocate list with decreased size
     list = new T[size - 1];
 
-    int i, j;
-    i = j = 0;
-
-    while (i < size) {
-      if (i == current) {
-        ++i;
+    int oldListIndex = 0;
+    
+    // Simply copy as long as oldListIndex < current
+    // When oldListIndex == current then skip copying this time.
+    // Afterwards, copy oldList at oldListIndex-1 in new list
+    while (oldListIndex < size) {
+      if (oldListIndex < current) {
+        list[oldListIndex] = temp[oldListIndex];
       }
-      list[j] = temp[i];
-      ++i;
-      ++j;
+      if (oldListIndex > current) {
+        list[oldListIndex-1] = temp[oldListIndex];
+      }
+      ++oldListIndex;
     }
+
+    // Free temporary memory
+    delete[] temp;
+
+    // If the current element was pointing at end, it should still point at end.
+    if (current == size-1)
+      --current;
   }
 
   // Decrement size after removal
   --size;
-
-  // If the current element was pointing at end, it should still point at end.
-  if (current == size)
-    --current;
 }
 
 template <typename T> void List<T>::update(const T &newValue) {
@@ -180,7 +191,7 @@ template <typename T> bool List<T>::next() {
   if (current == size - 1) {
     return false;
   } else {
-    current += 1;
+    ++current;
     return true;
   }
 }
@@ -193,7 +204,7 @@ template <typename T> bool List<T>::back() {
   if (current == 0) {
     return false;
   } else {
-    current -= 1;
+    --current;
     return true;
   }
 }

@@ -60,10 +60,10 @@ int main() {
   cout << "\nmyList = " << myList;
   printInReverse<int>(myList);
 
-  myList.end();
-
   // Remove as many can be removed
   try {
+    myList.end();
+
     myList.remove();
     myList.remove();
     myList.remove();
