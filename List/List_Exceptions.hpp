@@ -5,12 +5,11 @@
     element based operations (remove, next, back, start, end) on empty list.
 */
 class UninitializedListError : public std::bad_alloc {
-    private:
-        const char* _message;
-    public:
-        UninitializedListError(const char* message = "") : _message(message) {}
+private:
+  const char *_message;
 
-        const char * what() const noexcept override {
-            return _message;
-        }
+public:
+  UninitializedListError(const char *message = "") : _message(message) {}
+
+  const char *what() const noexcept override { return _message; }
 };
