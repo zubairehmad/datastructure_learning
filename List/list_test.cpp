@@ -3,21 +3,6 @@
 
 using namespace std;
 
-template <typename T> std::ostream &operator<<(std::ostream &op, List<T> list) {
-  if (list.length() == 0)
-    op << "[]";
-  else {
-    op << "[" << list.get();
-
-    while (list.next()) {
-      op << ", " << list.get();
-    }
-
-    op << "]";
-  }
-  return op;
-}
-
 void inputList(List<int> &list) {
   int value = 0;
 
