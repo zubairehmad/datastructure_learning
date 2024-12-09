@@ -52,8 +52,8 @@ public:
   // It returns true if element is present, otherwise false
   bool find(const T &) const;
 
-  template<typename VAR>
-  friend std::ostream& operator << (const std::ostream&, const List<VAR>&);
+  template <typename VAR>
+  friend std::ostream& operator << (std::ostream&, const List<VAR>&);
 
   // Destrutor to deallocate the allocated memory
   ~List();
@@ -231,6 +231,8 @@ template <typename T> std::ostream &operator<<(std::ostream &op, const List<T>& 
   if (list.length() == 0)
     op << "[]";
   else {
+    int oldCurrent = list.current;
+    list.start(); // Ensure full list is always shown
     op << "[" << list.get();
 
     while (list.next()) {
@@ -238,6 +240,8 @@ template <typename T> std::ostream &operator<<(std::ostream &op, const List<T>& 
     }
 
     op << "]";
+    // Ensure current doesn't change when using << operator for list output
+    list.current = oldCurrent;
   }
   return op;
 }

@@ -2,6 +2,7 @@
 #include <cassert>
 #include <exception>
 #include <iostream>
+#include <sstream>
 #include <stdexcept>
 #include <string>
 
@@ -334,6 +335,34 @@ void test_list_copy_constructor() {
   assert_notice(__func__, true);
 }
 
+void test_list_stream_insertion_operator() {
+
+  List<int> list;
+  std::ostringstream output;
+
+  output << list;
+
+  assert(output.str() == "[]");
+
+  output.str("");
+
+  list.add(93);
+  list.add(39);
+  list.add(9);
+
+  output << list;
+
+  assert(output.str() == "[9, 39, 93]");
+  assert(list.get() == 9);
+
+  list.add(49);
+  list.end();
+
+  assert(output.str() == "[49, 9, 39, 93]");
+  
+  assert_notice(__func__, true);
+}
+
 int main() {
 
   test_list_create();
@@ -348,6 +377,7 @@ int main() {
   test_list_update();
   test_list_find();
   test_list_copy_constructor();
+  test_list_stream_insertion_operator();
 
   std::cout << "\nAll assertions are correct\n";
   return 0;
