@@ -1,9 +1,7 @@
 #include "List.hpp"
 #include <cassert>
-#include <exception>
 #include <iostream>
 #include <sstream>
-#include <stdexcept>
 #include <string>
 
 void assert_notice(std::string name, bool passed) {
@@ -359,7 +357,7 @@ void test_list_stream_insertion_operator() {
   list.end();
 
   assert(output.str() == "[49, 9, 39, 93]");
-  
+
   assert_notice(__func__, true);
 }
 
