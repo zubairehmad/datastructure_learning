@@ -1,11 +1,12 @@
 #pragma once
 
-#include <stdexcept>
+#include <ostream>
+#include "List_Exceptions.hpp"
 
 template <typename T> class List {
 private:
   T *list;     // It is the array which will store all the list elements
-  int current; // It is the current marker
+  mutable int current; // It is the current marker
   int size;    // Size of the list
 
 public:
@@ -31,25 +32,28 @@ public:
 
   // Moves the current pointer to the start of the list, throws exception if
   // list don't have any elements
-  void start();
+  void start() const;
 
   // Moves the current pointer to the end of the list, throws exception if list
   // don't have any elements
-  void end();
+  void end() const;
 
   // Moves the current pointer/marker 1 step forward. If it can't move next
   // (i.e, at the end of list) then false is returned otherwise true. If list
   // don't have any elements, then exception is thrown
-  bool next();
+  bool next() const;
 
   // Moves the current pointer/marker 1 step backward. If it can't move backward
   // (i.e, at the start of list) then false is returned otherwise true. If list
   // don't have any elements, then exception is thrown
-  bool back();
+  bool back() const;
 
   // It moves the current marker to index at which, the given element is present
   // It returns true if element is present, otherwise false
-  bool find(const T &);
+  bool find(const T &) const;
+
+  template <typename VAR>
+  friend std::ostream& operator << (std::ostream&, const List<VAR>&);
 
   // Destrutor to deallocate the allocated memory
   ~List();
@@ -78,13 +82,13 @@ template <typename T> int List<T>::length() const {
 
 template <typename T> T List<T>::get() const {
   if (current == -1) {
-    throw std::runtime_error("The list don't have any elements!");
+    throw UninitializedListError("The list don't have any elements!");
   }
   return list[current];
 }
 
 template <typename T> void List<T>::add(const T &elem) {
-  if (list == nullptr) {
+  if (current == -1) {
     // If list is has no element, then simply create a new one.
     list = new T[1];
     list[0] = elem;
@@ -124,8 +128,8 @@ template <typename T> void List<T>::add(const T &elem) {
 
 template <typename T> void List<T>::remove() {
 
-  if (list == nullptr)
-    throw std::runtime_error("The list is empty! Cannot remove element!");
+  if (current == -1)
+    throw UninitializedListError("The list is empty! Cannot remove element!");
 
   if (size == 1) {
     delete[] list;
@@ -167,26 +171,26 @@ template <typename T> void List<T>::remove() {
 
 template <typename T> void List<T>::update(const T &newValue) {
   if (current == -1)
-    throw std::runtime_error("The list don't have any elements! Can't update current element!");
+    throw UninitializedListError("The list don't have any elements! Can't update current element!");
   list[current] = newValue;
 }
 
-template <typename T> void List<T>::start() {
+template <typename T> void List<T>::start() const {
   if (current == -1)
-    throw std::runtime_error("The list don't have any elements! Can't move to start!");
+    throw UninitializedListError("The list don't have any elements! Can't move to start!");
   current = 0;
 }
 
-template <typename T> void List<T>::end() {
+template <typename T> void List<T>::end() const {
   if (current == -1)
-    throw std::runtime_error("The list don't have any elements! Can't move to end!");
+    throw UninitializedListError("The list don't have any elements! Can't move to end!");
   current = size - 1;
 }
 
-template <typename T> bool List<T>::next() {
+template <typename T> bool List<T>::next() const {
 
   if (current == -1)
-    throw std::runtime_error("The list don't have any element! Can't move forward!");
+    throw UninitializedListError("The list don't have any element! Can't move forward!");
 
   if (current == size - 1) {
     return false;
@@ -196,10 +200,10 @@ template <typename T> bool List<T>::next() {
   }
 }
 
-template <typename T> bool List<T>::back() {
+template <typename T> bool List<T>::back() const {
 
   if (current == -1)
-    throw std::runtime_error("The list don't have any element! Can't move backward!");
+    throw UninitializedListError("The list don't have any element! Can't move backward!");
 
   if (current == 0) {
     return false;
@@ -209,7 +213,7 @@ template <typename T> bool List<T>::back() {
   }
 }
 
-template <typename T> bool List<T>::find(const T &elem) {
+template <typename T> bool List<T>::find(const T &elem) const {
 
   for (int i = 0; i < size; i++) {
     if (list[i] == elem) {
@@ -221,6 +225,25 @@ template <typename T> bool List<T>::find(const T &elem) {
   }
   // The given element is not present in the list
   return false;
+}
+
+template <typename T> std::ostream &operator<<(std::ostream &op, const List<T>& list) {
+  if (list.length() == 0)
+    op << "[]";
+  else {
+    int oldCurrent = list.current;
+    list.start(); // Ensure full list is always shown
+    op << "[" << list.get();
+
+    while (list.next()) {
+      op << ", " << list.get();
+    }
+
+    op << "]";
+    // Ensure current doesn't change when using << operator for list output
+    list.current = oldCurrent;
+  }
+  return op;
 }
 
 template <typename T> List<T>::~List() {
