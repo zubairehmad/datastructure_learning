@@ -1,7 +1,7 @@
 #pragma once
 
 #include <ostream>
-#include "List_Exceptions.hpp"
+#include "../Exceptions/List_Exceptions.hpp"
 
 template <typename T> class List {
 private:
