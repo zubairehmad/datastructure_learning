@@ -1,7 +1,6 @@
 #pragma once
 
 #include "../Exceptions/List_Exceptions.hpp"
-#include <iostream>
 #include <ostream>
 
 struct ListNode {
@@ -33,7 +32,8 @@ public:
   // Returns the value at current index
   int get() const;
 
-  // Adds the given element to the current position in list.
+  // Adds the given element after the current element, and moves current pointer
+  // to newly added element
   void add(const int &);
 
   // Removes the current element from the list
@@ -43,21 +43,21 @@ public:
   void update(const int &);
 
   // Moves the current pointer to the start of the list, throws exception if
-  // list don't have any elements
+  // list doesn't have any elements
   void start() const;
 
   // Moves the current pointer to the end of the list, throws exception if list
-  // don't have any elements
+  // doesn't have any elements
   void end() const;
 
   // Moves the current pointer/marker 1 step forward. If it can't move next
   // (i.e, at the end of list) then false is returned otherwise true. If list
-  // don't have any elements, then exception is thrown
+  // doesn't have any elements, then exception is thrown
   bool next() const;
 
   // Moves the current pointer/marker 1 step backward. If it can't move backward
   // (i.e, at the start of list) then false is returned otherwise true. If list
-  // don't have any elements, then exception is thrown
+  // doesn't have any elements, then exception is thrown
   bool back() const;
 
   // It moves the current marker to index at which, the given element is present
@@ -77,7 +77,7 @@ inline ListNode *List::getPreviousElement() const {
         "There is no element in the list! Can't get previous element...");
   }
 
-  // There is no previous element of head.
+  // There is no previous element of head/start of list, so nullptr is returned
   if (current == head)
     return nullptr;
 
@@ -109,7 +109,7 @@ inline List::List(const List &other) {
     otherTrav = otherTrav->next;
   }
 
-  // As the size of both lists is the same
+  // Ensure that the sizes of both lists are identical
   size = other.size;
 
   // Current is by default at first element
@@ -210,7 +210,7 @@ inline bool List::next() const {
 inline bool List::back() const {
   if (size == 0) {
     throw UninitializedListError("There is no element in the list! Cannot move "
-                                 "to backwards/previous element...");
+                                 "backwards/to previous element...");
   }
 
   if (current == head)
@@ -225,7 +225,7 @@ inline bool List::find(const int &value) const {
 
   for (int i = 0; i < size; i++) {
     if (temp->value == value) {
-      // Move current to the location at which, value is found
+      // Move current pointer to the location at which, value is found
       current = temp;
       return true;
     }
@@ -247,7 +247,7 @@ inline std::ostream &operator<<(std::ostream &out, const List &list) {
       out << ", " << list.get();
     }
     out << "]";
-    // Ensure that current of the list doesn't change
+    // Ensure that current pointer of the list doesn't change
     list.current = temp;
   }
 
