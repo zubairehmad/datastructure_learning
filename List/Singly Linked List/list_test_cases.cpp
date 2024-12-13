@@ -1,9 +1,6 @@
 #include "List.hpp"
-#include <algorithm>
 #include <cassert>
-#include <future>
 #include <iostream>
-#include <random>
 #include <sstream>
 
 using namespace std;
@@ -59,296 +56,296 @@ void test_list_get() {
 }
 
 void test_list_add() {
-    List list;
+  List list;
 
-    assert(list.length() == 0);
+  assert(list.length() == 0);
 
-    list.add(39);
-    
-    assert(list.length() == 1);
-    assert(list.get() == 39);
+  list.add(39);
 
-    list.add(48);
-    list.add(10);
+  assert(list.length() == 1);
+  assert(list.get() == 39);
 
-    assert(list.length() == 3);
-    assert(list.get() == 10);
+  list.add(48);
+  list.add(10);
 
-    list.back();
-    list.add(49);
+  assert(list.length() == 3);
+  assert(list.get() == 10);
 
-    assert(list.length() == 4);
-    assert(list.get() == 49);
-    assert_notice(__func__, true);
+  list.back();
+  list.add(49);
+
+  assert(list.length() == 4);
+  assert(list.get() == 49);
+  assert_notice(__func__, true);
 }
 
 void test_list_remove() {
-    List list;
+  List list;
 
-    try {
-        list.remove();
-        assert_notice(__func__, false);
-        assert(false);
-    } catch (const UninitializedListError& e) { /* Silent this exception only */ }
-
-    assert(list.length() == 0);
-
-    list.add(99);
-    list.add(69);
-
-    assert(list.get() == 69);
-
+  try {
     list.remove();
+    assert_notice(__func__, false);
+    assert(false);
+  } catch (const UninitializedListError &e) { /* Silent this exception only */ }
 
-    assert(list.get() == 99);
-    assert(list.length() == 1);
+  assert(list.length() == 0);
 
-    list.add(95);
-    list.add(300);
-    list.add(200);
+  list.add(99);
+  list.add(69);
 
-    assert(list.get() == 200);
-    
-    list.back();
-    list.back();
+  assert(list.get() == 69);
 
-    assert(list.get() == 95);
-    
-    list.remove();
+  list.remove();
 
-    assert(list.length() == 3);
-    assert(list.get() == 300);
+  assert(list.get() == 99);
+  assert(list.length() == 1);
 
-    list.start();
-    list.remove();
+  list.add(95);
+  list.add(300);
+  list.add(200);
 
-    assert(list.length() == 2);
-    assert(list.get() == 300);
+  assert(list.get() == 200);
 
-    assert_notice(__func__, true);
+  list.back();
+  list.back();
+
+  assert(list.get() == 95);
+
+  list.remove();
+
+  assert(list.length() == 3);
+  assert(list.get() == 300);
+
+  list.start();
+  list.remove();
+
+  assert(list.length() == 2);
+  assert(list.get() == 300);
+
+  assert_notice(__func__, true);
 }
 
 void test_list_update() {
-    List list;
+  List list;
 
-    try {
-        list.get();
-        assert_notice(__func__, false);
-        assert(false);
-    } catch (const UninitializedListError& e) { /* Silent this exception only */ }
+  try {
+    list.get();
+    assert_notice(__func__, false);
+    assert(false);
+  } catch (const UninitializedListError &e) { /* Silent this exception only */ }
 
-    list.add(94);
-    list.add(1);
-    list.add(24);
-    list.add(0);
+  list.add(94);
+  list.add(1);
+  list.add(24);
+  list.add(0);
 
-    assert(list.length() == 4);
-    assert(list.get() == 0);
+  assert(list.length() == 4);
+  assert(list.get() == 0);
 
-    list.update(99);
-    
-    assert(list.get() == 99);
-    assert(list.length() == 4);
+  list.update(99);
 
-    assert_notice(__func__, true);
+  assert(list.get() == 99);
+  assert(list.length() == 4);
+
+  assert_notice(__func__, true);
 }
 
 void test_list_start() {
-    List list;
+  List list;
 
-    try {
-        list.start();
-        assert_notice(__func__, false);
-        assert(false);
-    } catch (const UninitializedListError& e) { /* Silent this exception only */ }
-
-    list.add(99);
+  try {
     list.start();
+    assert_notice(__func__, false);
+    assert(false);
+  } catch (const UninitializedListError &e) { /* Silent this exception only */ }
 
-    assert(list.get() == 99);
-    assert(list.length() == 1);
+  list.add(99);
+  list.start();
 
-    list.add(92);
-    list.add(64);
+  assert(list.get() == 99);
+  assert(list.length() == 1);
 
-    assert(list.get() == 64);
-    assert(list.length() == 3);
-    
-    list.start();
+  list.add(92);
+  list.add(64);
 
-    assert(list.length() == 3);
-    assert(list.get() == 99);
+  assert(list.get() == 64);
+  assert(list.length() == 3);
 
-    assert_notice(__func__, true);
+  list.start();
+
+  assert(list.length() == 3);
+  assert(list.get() == 99);
+
+  assert_notice(__func__, true);
 }
 
 void test_list_end() {
-    List list;
+  List list;
 
-    try {
-        list.end();
-        assert_notice(__func__, false);
-        assert(false);
-    } catch (const UninitializedListError& e) { /* Silent this exception only */ }
-
-    list.add(932);
-    list.add(19);
-    list.add(192);
-
-    assert(list.length() == 3);
-    assert(list.get() == 192);
-
+  try {
     list.end();
-    assert(list.get() == 192);
+    assert_notice(__func__, false);
+    assert(false);
+  } catch (const UninitializedListError &e) { /* Silent this exception only */ }
 
-    list.start();
-    assert(list.get() == 932);
+  list.add(932);
+  list.add(19);
+  list.add(192);
 
-    list.end();
-    assert(list.get() == 192);
+  assert(list.length() == 3);
+  assert(list.get() == 192);
 
-    assert_notice(__func__, true);
+  list.end();
+  assert(list.get() == 192);
+
+  list.start();
+  assert(list.get() == 932);
+
+  list.end();
+  assert(list.get() == 192);
+
+  assert_notice(__func__, true);
 }
 
 void test_list_next() {
-    List list;
+  List list;
 
-    try {
-        list.next();
-        assert_notice(__func__, false);
-        assert(false);
-    } catch (const UninitializedListError& e) { /* Silent this exception */ }
+  try {
+    list.next();
+    assert_notice(__func__, false);
+    assert(false);
+  } catch (const UninitializedListError &e) { /* Silent this exception */ }
 
-    list.add(93);
-    list.add(92);
-    list.add(91);
+  list.add(93);
+  list.add(92);
+  list.add(91);
 
-    assert(list.get() == 91);
-    assert(list.next() == false);
+  assert(list.get() == 91);
+  assert(list.next() == false);
 
-    list.start();
+  list.start();
 
-    assert(list.get() == 93);
-    assert(list.next() == true);
+  assert(list.get() == 93);
+  assert(list.next() == true);
 
-    assert(list.get() == 92);
-    assert(list.next() == true);
+  assert(list.get() == 92);
+  assert(list.next() == true);
 
-    assert(list.get() == 91);
-    assert(list.next() == false);
+  assert(list.get() == 91);
+  assert(list.next() == false);
 
-    assert_notice(__func__, true);
+  assert_notice(__func__, true);
 }
 
 void test_list_back() {
-    List list;
+  List list;
 
-    try {
-        list.back();
-        assert_notice(__func__, false);
-        assert(false);
-    } catch (const UninitializedListError& e) { /* Silent this exception only */ }
+  try {
+    list.back();
+    assert_notice(__func__, false);
+    assert(false);
+  } catch (const UninitializedListError &e) { /* Silent this exception only */ }
 
-    list.add(93);
-    
-    assert(list.length() == 1);
-    assert(list.get() == 93);
-    assert(list.back() == false);
+  list.add(93);
 
-    list.add(92);
-    list.add(91);
+  assert(list.length() == 1);
+  assert(list.get() == 93);
+  assert(list.back() == false);
 
-    assert(list.length() == 3);
-    assert(list.get() == 91);
+  list.add(92);
+  list.add(91);
 
-    assert(list.back() == true);
-    assert(list.get() == 92);
+  assert(list.length() == 3);
+  assert(list.get() == 91);
 
-    assert(list.back() == true);
-    assert(list.get() == 93);
-    assert(list.back() == false);
+  assert(list.back() == true);
+  assert(list.get() == 92);
 
-    assert_notice(__func__, true);
+  assert(list.back() == true);
+  assert(list.get() == 93);
+  assert(list.back() == false);
+
+  assert_notice(__func__, true);
 }
 
 void test_list_find() {
-    List list;
+  List list;
 
-    assert(list.find(93) == false);
+  assert(list.find(93) == false);
 
-    list.add(93);
-    list.add(92);
-    list.add(91);
-    list.add(39);
-    list.add(29);
-    list.add(19);
+  list.add(93);
+  list.add(92);
+  list.add(91);
+  list.add(39);
+  list.add(29);
+  list.add(19);
 
-    assert(list.get() == 19);
-    assert(list.length() == 6);
+  assert(list.get() == 19);
+  assert(list.length() == 6);
 
-    assert(list.find(19) == true);
-    assert(list.get() == 19);
-    assert(list.next() == false);
+  assert(list.find(19) == true);
+  assert(list.get() == 19);
+  assert(list.next() == false);
 
-    assert(list.find(92) == true);
-    assert(list.get() == 92);
-    assert(list.back() == true);
+  assert(list.find(92) == true);
+  assert(list.get() == 92);
+  assert(list.back() == true);
 
-    assert(list.find(39) == true);
-    assert(list.get() == 39);
+  assert(list.find(39) == true);
+  assert(list.get() == 39);
 
-    assert(list.find(100) == false);
-    assert(list.get() == 39);
+  assert(list.find(100) == false);
+  assert(list.get() == 39);
 
-    assert_notice(__func__, true);
+  assert_notice(__func__, true);
 }
 
 void test_list_copy_constructor() {
-    List list;
-    list.add(93);
-    list.add(92);
-    list.add(91);
+  List list;
+  list.add(93);
+  list.add(92);
+  list.add(91);
 
-    List list1 = list;
-    List list2(list);
+  List list1 = list;
+  List list2(list);
 
-    assert(list1.length() == list2.length());
+  assert(list1.length() == list2.length());
 
-    do {
-        assert(list1.get() == list2.get());
-    } while (list1.next() == true && list2.next() == true);
+  do {
+    assert(list1.get() == list2.get());
+  } while (list1.next() == true && list2.next() == true);
 
-    assert_notice(__func__, true);
+  assert_notice(__func__, true);
 }
 
 void test_list_stream_insertion_operator() {
-    List list;
-    ostringstream output;
+  List list;
+  ostringstream output;
 
-    output << list;
+  output << list;
 
-    assert(output.str() == "[]");
-    output.str("");
+  assert(output.str() == "[]");
+  output.str("");
 
-    list.add(39);
-    list.add(29);
-    list.add(19);
-    list.add(9);
+  list.add(39);
+  list.add(29);
+  list.add(19);
+  list.add(9);
 
-    output << list;
-    assert(output.str() == "[39, 29, 19, 9]");
-    output.str("");
+  output << list;
+  assert(output.str() == "[39, 29, 19, 9]");
+  output.str("");
 
-    list.end();
-    assert(list.get() == 9);
+  list.end();
+  assert(list.get() == 9);
 
-    list.back();
+  list.back();
 
-    output << list;
-    assert(output.str() == "[39, 29, 19, 9]");
-    assert(list.get() == 19);
+  output << list;
+  assert(output.str() == "[39, 29, 19, 9]");
+  assert(list.get() == 19);
 
-    assert_notice(__func__, false);
+  assert_notice(__func__, true);
 }
 
 int main() {

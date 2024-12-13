@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../Exceptions/List_Exceptions.hpp"
+#include <iostream>
 #include <ostream>
 
 struct ListNode {
@@ -76,6 +77,10 @@ inline ListNode *List::getPreviousElement() const {
         "There is no element in the list! Can't get previous element...");
   }
 
+  // There is no previous element of head.
+  if (current == head)
+    return nullptr;
+
   ListNode *prevElem = head;
   while (prevElem->next != current) {
     prevElem = prevElem->next;
@@ -86,17 +91,26 @@ inline ListNode *List::getPreviousElement() const {
 inline List::List() : head(nullptr), current(nullptr), size(0) {}
 
 inline List::List(const List &other) {
-  head = new ListNode[other.size];
-  size = other.size;
-  current = head;
 
-  ListNode *otherHead = other.head;
-
-  for (int i = 0; i < size; i++) {
-    current->value = otherHead->value;
-    current = current->next;
-    otherHead = otherHead->next;
+  if (other.size == 0) {
+    head = current = nullptr;
+    size = 0;
+    return;
   }
+
+  head = new ListNode(other.head->value);
+  current = head;
+  ListNode *otherTrav = other.head->next;
+
+  while (otherTrav != nullptr) {
+    ListNode *temp = new ListNode(otherTrav->value);
+    current->next = temp;
+    current = current->next;
+    otherTrav = otherTrav->next;
+  }
+
+  // As the size of both lists is the same
+  size = other.size;
 
   // Current is by default at first element
   current = head;
@@ -115,7 +129,7 @@ inline int List::get() const {
 inline void List::add(const int &value) {
 
   if (size == 0) {
-    head = new ListNode[1];
+    head = new ListNode();
     head->value = value;
     current = head;
   } else {
@@ -129,18 +143,26 @@ inline void List::add(const int &value) {
 }
 
 inline void List::remove() {
+
   if (size == 0) {
     throw UninitializedListError(
         "There is no element in the list! Cannot remove current element...");
   } else if (size == 1) {
     current = nullptr;
-    delete[] head;
+    delete head;
+    head = nullptr;
   } else {
-    ListNode *prev = getPreviousElement();
     ListNode *temp = current;
 
-    prev->next = current->next;
-    current = current->next;
+    if (current == head) {
+      head = head->next;
+      current = head;
+    } else {
+      ListNode *prev = getPreviousElement();
+      prev->next = current->next;
+      current = (current->next == nullptr) ? prev : current->next;
+    }
+
     delete temp;
   }
   size--;
@@ -203,6 +225,8 @@ inline bool List::find(const int &value) const {
 
   for (int i = 0; i < size; i++) {
     if (temp->value == value) {
+      // Move current to the location at which, value is found
+      current = temp;
       return true;
     }
     temp = temp->next;
@@ -223,6 +247,8 @@ inline std::ostream &operator<<(std::ostream &out, const List &list) {
       out << ", " << list.get();
     }
     out << "]";
+    // Ensure that current of the list doesn't change
+    list.current = temp;
   }
 
   return out;
@@ -230,7 +256,12 @@ inline std::ostream &operator<<(std::ostream &out, const List &list) {
 
 inline List::~List() {
   if (head != nullptr) {
-    current = nullptr;
-    delete[] head;
+    current = head;
+    while (current != nullptr) {
+      ListNode *temp = current;
+      current = current->next;
+      delete temp;
+    }
+    head = nullptr;
   }
 }
