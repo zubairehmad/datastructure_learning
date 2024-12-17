@@ -6,7 +6,7 @@
 struct ListNode {
 
   ListNode(int _value = 0, ListNode *_next = nullptr)
-      : value(_value), next(_next) {}
+      : value(_value), next((_next == nullptr)? this : _next) {}
 
   int value;
   ListNode *next;
@@ -50,15 +50,13 @@ public:
   // doesn't have any elements
   void end() const;
 
-  // Moves the current pointer/marker 1 step forward. If it can't move next
-  // (i.e, at the end of list) then false is returned otherwise true. If list
-  // doesn't have any elements, then exception is thrown
-  bool next() const;
+  // Moves the current pointer/marker 1 step forward. If the current pointer is
+  // at end, It moves to the start of the list
+  void next() const;
 
-  // Moves the current pointer/marker 1 step backward. If it can't move backward
-  // (i.e, at the start of list) then false is returned otherwise true. If list
-  // doesn't have any elements, then exception is thrown
-  bool back() const;
+  // Moves the current pointer 1 step backwards. If the current pointer is at
+  // start, It moves it to the end of the list
+  void back() const;
 
   // It moves the current marker to index at which, the given element is present
   // It returns true if element is present, otherwise false
@@ -77,9 +75,13 @@ inline ListNode *List::getPreviousElement() const {
         "There is no element in the list! Can't get previous element...");
   }
 
-  // There is no previous element of head/start of list, so nullptr is returned
-  if (current == head)
-    return nullptr;
+  // The previous element of head, in circular linked list is last element of the list.
+  if (current == head) {
+    this->end();
+    ListNode* lastElem = current;
+    current = head;
+    return lastElem;
+  }
 
   ListNode *prevElem = head;
   while (prevElem->next != current) {
@@ -102,12 +104,15 @@ inline List::List(const List &other) {
   current = head;
   ListNode *otherTrav = other.head->next;
 
-  while (otherTrav != nullptr) {
+  for (int i = 1; i < other.size; i++) {
     ListNode *temp = new ListNode(otherTrav->value);
     current->next = temp;
     current = current->next;
     otherTrav = otherTrav->next;
   }
+
+  // In circular linked list, `next` element after the last is the `head` element
+  current->next = head;
 
   // Ensure that the sizes of both lists are identical
   size = other.size;
@@ -147,24 +152,27 @@ inline void List::remove() {
   if (size == 0) {
     throw UninitializedListError(
         "There is no element in the list! Cannot remove current element...");
-  } else if (size == 1) {
-    current = nullptr;
-    delete head;
-    head = nullptr;
-  } else {
-    ListNode *temp = current;
-
-    if (current == head) {
-      head = head->next;
-      current = head;
-    } else {
-      ListNode *prev = getPreviousElement();
-      prev->next = current->next;
-      current = (current->next == nullptr) ? prev : current->next;
-    }
-
-    delete temp;
   }
+  
+  ListNode * temp = current;
+
+  if (size == 1) {
+    current = nullptr;
+    head = nullptr;
+  } else if (current == head) {
+    // The previous element of head node is the last node
+    ListNode* prev = getPreviousElement();
+    head = head->next;
+    current = head;
+    // Ensure the previous element (aka last node) is correctly pointing to valid head node
+    prev->next = head;
+  } else {
+    ListNode *prev = getPreviousElement();
+    prev->next = current->next;
+    current = (current->next == head) ? prev : current->next;
+  }
+
+  delete temp;
   size--;
 }
 
@@ -189,35 +197,30 @@ inline void List::end() const {
     throw UninitializedListError(
         "There is no element in the list! Cannot move to end...");
   }
-  while (current->next != nullptr) {
+  while (current->next != head) {
     current = current->next;
   }
 }
 
-inline bool List::next() const {
+inline void List::next() const {
   if (size == 0) {
     throw UninitializedListError(
         "There is no element in the list! Cannot move to next element...");
   }
 
-  if (current->next == nullptr)
-    return false;
-
   current = current->next;
-  return true;
 }
 
-inline bool List::back() const {
+inline void List::back() const {
   if (size == 0) {
     throw UninitializedListError("There is no element in the list! Cannot move "
                                  "backwards/to previous element...");
   }
 
   if (current == head)
-    return false;
-
-  current = getPreviousElement();
-  return true;
+    this->end();
+  else
+    current = getPreviousElement();
 }
 
 inline bool List::find(const int &value) const {
@@ -241,9 +244,9 @@ inline std::ostream &operator<<(std::ostream &out, const List &list) {
     out << "[]";
   } else {
     ListNode *temp = list.current;
-    list.start();
+    list.current = list.head;
     out << "[" << list.get();
-    while (list.next()) {
+    while (list.current->next != list.head) {
       out << ", " << list.get();
     }
     out << "]";
