@@ -5,11 +5,12 @@
 
 struct ListNode {
 
-  ListNode(int _value = 0, ListNode *_next = nullptr)
-      : value(_value), next(_next) {}
+  ListNode(int _value = 0, ListNode *_next = nullptr, ListNode *_prev = nullptr)
+      : value(_value), next(_next), prev(_prev) {}
 
   int value;
   ListNode *next;
+  ListNode *prev;
 };
 
 class List {
@@ -17,8 +18,6 @@ private:
   ListNode *head;            // It is the start (head) of the list
   mutable ListNode *current; // It is the current pointer
   int size;                  // Size of the list
-
-  ListNode *getPreviousElement() const;
 
 public:
   List();
@@ -70,24 +69,6 @@ public:
   ~List();
 };
 
-inline ListNode *List::getPreviousElement() const {
-
-  if (size == 0) {
-    throw UninitializedListError(
-        "There is no element in the list! Can't get previous element...");
-  }
-
-  // There is no previous element of head/start of list, so nullptr is returned
-  if (current == head)
-    return nullptr;
-
-  ListNode *prevElem = head;
-  while (prevElem->next != current) {
-    prevElem = prevElem->next;
-  }
-  return prevElem;
-}
-
 inline List::List() : head(nullptr), current(nullptr), size(0) {}
 
 inline List::List(const List &other) {
@@ -104,6 +85,7 @@ inline List::List(const List &other) {
 
   while (otherTrav != nullptr) {
     ListNode *temp = new ListNode(otherTrav->value);
+    temp->prev = current;
     current->next = temp;
     current = current->next;
     otherTrav = otherTrav->next;
@@ -136,6 +118,14 @@ inline void List::add(const int &value) {
     ListNode *newElem = new ListNode(value);
 
     newElem->next = current->next;
+    newElem->prev = current;
+
+    // If new element is not at the end then update prev pointer of next element
+    // So that it points correctly to previous new element.
+    if (newElem->next != nullptr) {
+      newElem->next->prev = newElem;
+    }
+
     current->next = newElem;
     current = current->next;
   }
@@ -147,24 +137,36 @@ inline void List::remove() {
   if (size == 0) {
     throw UninitializedListError(
         "There is no element in the list! Cannot remove current element...");
-  } else if (size == 1) {
-    current = nullptr;
-    delete head;
-    head = nullptr;
-  } else {
-    ListNode *temp = current;
-
-    if (current == head) {
-      head = head->next;
-      current = head;
-    } else {
-      ListNode *prev = getPreviousElement();
-      prev->next = current->next;
-      current = (current->next == nullptr) ? prev : current->next;
-    }
-
-    delete temp;
   }
+
+  ListNode *temp = current;
+
+  if (size == 1) {
+    // If there is only one element, then simply set current
+    // and head to nullptr
+    current = nullptr;
+    head = nullptr;
+  } else if (current == head) {
+    // If current is at head, then move the head to next element, and remove
+    // previous by setting it to nullptr
+    head = head->next;
+    head->prev = nullptr;
+    current = head;
+  } else {
+    // If current is in middle, then skip it in the `next` chain
+    current->prev->next = current->next;
+
+    if (current->next == nullptr) {
+      // If current is at end, then move the current to previous element
+      current = current->prev;
+    } else {
+      // Move the current to next element, and skip it in the `prev` chain also.
+      current->next->prev = current->prev;
+      current = current->next;
+    }
+  }
+
+  delete temp;
   size--;
 }
 
@@ -216,7 +218,7 @@ inline bool List::back() const {
   if (current == head)
     return false;
 
-  current = getPreviousElement();
+  current = current->prev;
   return true;
 }
 
