@@ -219,20 +219,25 @@ void test_list_next() {
   list.add(93);
   list.add(92);
   list.add(91);
+  list.add(90);
 
-  assert(list.get() == 91);
-  assert(list.next() == false);
-
-  list.start();
-
-  assert(list.get() == 93);
-  assert(list.next() == true);
-
-  assert(list.get() == 92);
-  assert(list.next() == true);
-
-  assert(list.get() == 91);
-  assert(list.next() == false);
+  for (int i = 0; i < 16; i++) {
+    switch (i % 4) {
+      case 0:
+        assert(list.get() == 90);
+        break;
+      case 1:
+        assert(list.get() == 93);
+        break;
+      case 2:
+        assert(list.get() == 92);
+        break;
+      case 3:
+        assert(list.get() == 91);
+        break;
+    }
+    list.next();
+  }
 
   assert_notice(__func__, true);
 }
@@ -250,7 +255,6 @@ void test_list_back() {
 
   assert(list.length() == 1);
   assert(list.get() == 93);
-  assert(list.back() == false);
 
   list.add(92);
   list.add(91);
@@ -258,12 +262,25 @@ void test_list_back() {
   assert(list.length() == 3);
   assert(list.get() == 91);
 
-  assert(list.back() == true);
-  assert(list.get() == 92);
+  list.add(90);
 
-  assert(list.back() == true);
-  assert(list.get() == 93);
-  assert(list.back() == false);
+  for (int i = 0; i < 16; i++) {
+    switch (i % 4) {
+      case 0:
+        assert(list.get() == 90);
+        break;
+      case 1:
+        assert(list.get() == 91);
+        break;
+      case 2:
+        assert(list.get() == 92);
+        break;
+      case 3:
+        assert(list.get() == 93);
+        break;
+    }
+    list.back();
+  }
 
   assert_notice(__func__, true);
 }
@@ -285,11 +302,10 @@ void test_list_find() {
 
   assert(list.find(19) == true);
   assert(list.get() == 19);
-  assert(list.next() == false);
 
   assert(list.find(92) == true);
   assert(list.get() == 92);
-  assert(list.back() == true);
+  list.back();
 
   assert(list.find(39) == true);
   assert(list.get() == 39);
@@ -311,9 +327,11 @@ void test_list_copy_constructor() {
 
   assert(list1.length() == list2.length());
 
-  do {
+  for (int i = 0; i < list1.length(); i++) {
     assert(list1.get() == list2.get());
-  } while (list1.next() == true && list2.next() == true);
+    list1.next();
+    list2.next();
+  }
 
   assert_notice(__func__, true);
 }
