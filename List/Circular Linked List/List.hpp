@@ -53,12 +53,12 @@ public:
   // Moves the current pointer/marker 1 step forward. If it can't move next
   // (i.e, at the end of list) then false is returned otherwise true. If list
   // doesn't have any elements, then exception is thrown
-  bool next() const;
+  void next() const;
 
   // Moves the current pointer/marker 1 step backward. If it can't move backward
   // (i.e, at the start of list) then false is returned otherwise true. If list
   // doesn't have any elements, then exception is thrown
-  bool back() const;
+  void back() const;
 
   // It moves the current marker to index at which, the given element is present
   // It returns true if element is present, otherwise false
@@ -194,30 +194,27 @@ inline void List::end() const {
   }
 }
 
-inline bool List::next() const {
+inline void List::next() const {
   if (size == 0) {
     throw UninitializedListError(
         "There is no element in the list! Cannot move to next element...");
   }
 
-  if (current->next == nullptr)
-    return false;
-
-  current = current->next;
-  return true;
+  // Move to head if at the end
+  current = current->next == nullptr? head : current->next;
 }
 
-inline bool List::back() const {
+inline void List::back() const {
   if (size == 0) {
     throw UninitializedListError("There is no element in the list! Cannot move "
                                  "backwards/to previous element...");
   }
-
-  if (current == head)
-    return false;
-
-  current = getPreviousElement();
-  return true;
+  if (current == head) {
+    // Move the current pointer to the end of the list
+    end();
+  } else {
+    current = getPreviousElement();
+  }
 }
 
 inline bool List::find(const int &value) const {
@@ -243,8 +240,9 @@ inline std::ostream &operator<<(std::ostream &out, const List &list) {
     ListNode *temp = list.current;
     list.start();
     out << "[" << list.get();
-    while (list.next()) {
+    while (list.current != nullptr) {
       out << ", " << list.get();
+      list.current = list.current->next;
     }
     out << "]";
     // Ensure that current pointer of the list doesn't change
