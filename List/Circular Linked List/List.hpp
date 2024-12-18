@@ -50,14 +50,12 @@ public:
   // doesn't have any elements
   void end() const;
 
-  // Moves the current pointer/marker 1 step forward. If it can't move next
-  // (i.e, at the end of list) then false is returned otherwise true. If list
-  // doesn't have any elements, then exception is thrown
+  // Moves the current pointer/marker 1 step forward. If the pointer is at the end
+  // of the list, then the method moves it to the start of the list
   void next() const;
 
-  // Moves the current pointer/marker 1 step backward. If it can't move backward
-  // (i.e, at the start of list) then false is returned otherwise true. If list
-  // doesn't have any elements, then exception is thrown
+  // Moves the current pointer/marker 1 step backward. If the pointer is at the start
+  // of the list, then the method moves it to the end of the list
   void back() const;
 
   // It moves the current marker to index at which, the given element is present
