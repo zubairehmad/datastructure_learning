@@ -162,6 +162,7 @@ void test_list_back() {
   // Expectation: As current is 0 (already at start) so back() should return
   // false.
   assert(list.back() == false);
+  assert(list.getBackMethodIterationCount() == 0);
   // Expectation: There is only one element i.e, 931. get() should return 931
   assert(list.get() == 931);
 
@@ -169,6 +170,7 @@ void test_list_back() {
   // Expectation: Again current is already at start, so back should return
   // false.
   assert(list.back() == false);
+  assert(list.getBackMethodIterationCount() == 0);
 
   // Expectation: List adds element in a stack like way, where each element
   // inserted is placed at current and already present element is pushed
@@ -182,14 +184,18 @@ void test_list_back() {
   // Expectation: As the list is at end, and list has size of 2. So back should
   // move one current one step backward.
   assert(list.back() == true);
+  assert(list.getBackMethodIterationCount() == 1);
   // Expectation: On second last index, 59 is present so it should be returned.
   assert(list.get() == 59);
 
   list.back();
+  assert(list.getBackMethodIterationCount() == 1);
   list.back();
+  assert(list.getBackMethodIterationCount() == 1);
 
   // Expectation: As the list is already at start, so back should return false
   assert(list.back() == false);
+  assert(list.getBackMethodIterationCount() == 0);
   // Expectation: As stated above, due to stack like insertion of list elements
   // by method add, So last added element 79 should be at top (start of the
   // list).

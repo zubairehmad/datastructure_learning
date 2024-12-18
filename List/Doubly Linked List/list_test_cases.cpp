@@ -251,6 +251,7 @@ void test_list_back() {
   assert(list.length() == 1);
   assert(list.get() == 93);
   assert(list.back() == false);
+  assert(list.getBackMethodIterationCount() == 0);
 
   list.add(92);
   list.add(91);
@@ -259,11 +260,14 @@ void test_list_back() {
   assert(list.get() == 91);
 
   assert(list.back() == true);
+  assert(list.getBackMethodIterationCount() == 1);
   assert(list.get() == 92);
 
   assert(list.back() == true);
+  assert(list.getBackMethodIterationCount() == 1);
   assert(list.get() == 93);
   assert(list.back() == false);
+  assert(list.getBackMethodIterationCount() == 0);
 
   assert_notice(__func__, true);
 }

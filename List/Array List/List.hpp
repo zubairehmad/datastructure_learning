@@ -9,6 +9,8 @@ private:
   mutable int current; // It is the current marker
   int size;    // Size of the list
 
+  mutable int getBackMethodIterations; // This method holds the iterations done by back() method.
+
 public:
   List();
 
@@ -51,6 +53,9 @@ public:
   // It moves the current marker to index at which, the given element is present
   // It returns true if element is present, otherwise false
   bool find(const T &) const;
+
+  // It returns the total iterations taken back() method (or getPreviousElement())
+  int getBackMethodIterationCount() const;
 
   template <typename VAR>
   friend std::ostream& operator << (std::ostream&, const List<VAR>&);
@@ -205,10 +210,13 @@ template <typename T> bool List<T>::back() const {
   if (current == -1)
     throw UninitializedListError("The list don't have any element! Can't move backward!");
 
+  getBackMethodIterations = 0;
+
   if (current == 0) {
     return false;
   } else {
     --current;
+    getBackMethodIterations++;
     return true;
   }
 }
@@ -244,6 +252,10 @@ template <typename T> std::ostream &operator<<(std::ostream &op, const List<T>& 
     list.current = oldCurrent;
   }
   return op;
+}
+
+template<typename T> int List<T>::getBackMethodIterationCount() const {
+  return getBackMethodIterations;
 }
 
 template <typename T> List<T>::~List() {

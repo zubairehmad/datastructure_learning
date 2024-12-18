@@ -90,6 +90,7 @@ inline ListNode *List::getPreviousElement() const {
     return nullptr;
 
   ListNode *prevElem = head;
+  getPreviousElementIterations++;
   while (prevElem->next != current) {
     prevElem = prevElem->next;
     getPreviousElementIterations++;
