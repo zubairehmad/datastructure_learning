@@ -9,6 +9,12 @@ void assert_notice(std::string name, bool passed) {
   std::cout << "\n" << name << " " << (passed ? "passed" : "failed") << ".\n";
 }
 
+/*
+  __func__ : It is a predefined identifier, which can be used to get the name of the function where it is used. 
+            In simple words, it contains the name of the method in which it is used, so if you use it inside main() method,
+            Its value will be "main" or if in any other lets say customFunc() then its value will be "customFunc" inside that method.
+*/
+
 void test_list_constructor() {
   List list;
   assert(list.length() == 0);
