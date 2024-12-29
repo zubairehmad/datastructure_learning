@@ -18,6 +18,8 @@ private:
   mutable ListNode *current; // It is the current pointer
   int size;                  // Size of the list
 
+  mutable int getBackMethodIterations; // This method holds the iterations done by back method.
+
   ListNode *getPreviousElement() const;
 
 public:
@@ -62,6 +64,9 @@ public:
   // It returns true if element is present, otherwise false
   bool find(const int &) const;
 
+  // It returns the total iterations taken back() method (or getPreviousElement())
+  int getBackMethodIterationCount() const;
+
   friend std::ostream &operator<<(std::ostream &, const List &);
 
   // Destrutor to deallocate the allocated memory
@@ -75,13 +80,17 @@ inline ListNode *List::getPreviousElement() const {
         "There is no element in the list! Can't get previous element...");
   }
 
+  getBackMethodIterations = 0;
+
   // There is no previous element of head/start of list, so nullptr is returned
   if (current == head)
     return nullptr;
 
   ListNode *prevElem = head;
+  getBackMethodIterations++;
   while (prevElem->next != current) {
     prevElem = prevElem->next;
+    getBackMethodIterations++;
   }
   return prevElem;
 }
@@ -228,6 +237,10 @@ inline bool List::find(const int &value) const {
   }
 
   return false;
+}
+
+inline int List::getBackMethodIterationCount() const {
+  return getBackMethodIterations;
 }
 
 inline std::ostream &operator<<(std::ostream &out, const List &list) {
