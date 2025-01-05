@@ -158,7 +158,7 @@ inline void List::remove() {
     } else {
       ListNode *prev = getPreviousElement();
       prev->next = current->next;
-      current = (current->next == nullptr) ? prev : current->next;
+      current = current->next == nullptr? head : current->next;
     }
 
     delete temp;
