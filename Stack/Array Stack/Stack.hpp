@@ -11,7 +11,6 @@ class Stack {
 
   public:
     Stack();
-    Stack(const Stack&);
 
     void push(int elem);
     int pop();
@@ -24,12 +23,6 @@ inline Stack::Stack(): current(-1) {
   // Initialize every element with 0
   for (int i = 0; i < MAX_STACK_SIZE; i++) {
     stackArray[i] = 0;
-  }
-}
-
-inline Stack::Stack(const Stack& other): current(other.current) {
-  for (int i = 0; i < MAX_STACK_SIZE; i++) {
-    stackArray[i] = other.stackArray[i];
   }
 }
 
