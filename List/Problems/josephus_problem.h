@@ -6,9 +6,9 @@ class InvalidInput : public std::invalid_argument {
     InvalidInput(const char* message = "") : std::invalid_argument(message) {}
 };
 
-inline int getSurvivorForJosephusProblem(int numOfPlayers, int eliminatingPlayer) {
+inline int getSurvivorForJosephusProblem(int numOfPlayers, int eliminatingPlayerPosition) {
 
-  if (numOfPlayers < 1 || eliminatingPlayer < 1) {
+  if (numOfPlayers < 1 || eliminatingPlayerPosition < 1) {
     throw InvalidInput("Invalid input given! Number of players, or eliminating player can never be less than 1!");
   }
 
@@ -23,13 +23,9 @@ inline int getSurvivorForJosephusProblem(int numOfPlayers, int eliminatingPlayer
 
   while (players.length() != 1) {
     // i = 1, because current player is also counted
-    for (int i = 1; i < eliminatingPlayer; i++) {
+    for (int i = 1; i < eliminatingPlayerPosition; i++) {
       players.next();
     }
-    List newList = players;
-    newList.end();
-    bool condition = players.get() == newList.get();
-
     players.remove();
   }
 
