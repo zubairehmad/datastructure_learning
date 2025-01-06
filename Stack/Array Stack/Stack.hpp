@@ -34,10 +34,12 @@ inline Stack::Stack(const Stack& other): current(other.current) {
 }
 
 inline void Stack::push(int elem) {
+  if (isFull()) throw StackFullError("Cannot push another element! Stack is full.");
   stackArray[++current] = elem;
 }
 
 inline int Stack::pop() {
+  if (isEmpty()) throw StackEmptyError("Cannot remove top element! Stack is empty.");
   return stackArray[current--];
 }
 
