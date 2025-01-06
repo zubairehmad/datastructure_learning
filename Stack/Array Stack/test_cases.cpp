@@ -71,6 +71,34 @@ void test_stack_top() {
   assert_notice(__func__, true);
 }
 
+void test_stack_size() {
+  Stack myStack;
+
+  assert(myStack.size() == 0);
+
+  myStack.push(1);
+  myStack.push(2);
+
+  assert(myStack.size() == 2);
+
+  myStack.pop();
+  myStack.pop();
+
+  for (int i = 0; i < MAX_STACK_SIZE; i++) {
+    myStack.push(i);
+  }
+
+  assert(myStack.size() == MAX_STACK_SIZE);
+
+  for (int i = 0; i < MAX_STACK_SIZE; i++) {
+    myStack.pop();
+  }
+
+  assert(myStack.size() == 0);
+
+  assert_notice(__func__, true);
+}
+
 void test_stack_isEmpty() {
   Stack myStack;
 
@@ -117,6 +145,7 @@ int main() {
   test_stack_push();
   test_stack_pop();
   test_stack_top();
+  test_stack_size();
   test_stack_isEmpty();
   test_stack_isFull();
 

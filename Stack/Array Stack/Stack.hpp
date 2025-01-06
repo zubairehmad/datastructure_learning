@@ -15,6 +15,7 @@ class Stack {
     void push(int elem);
     int pop();
     int top() const;
+    int size() const;
     bool isEmpty() const;
     bool isFull() const;
 };
@@ -39,6 +40,10 @@ inline int Stack::pop() {
 inline int Stack::top() const {
   if (isEmpty()) throw StackEmptyError("Cannot get top element! Stack is empty.");
   return stackArray[current];
+}
+
+inline int Stack::size() const {
+  return current+1;
 }
 
 inline bool Stack::isEmpty() const {
