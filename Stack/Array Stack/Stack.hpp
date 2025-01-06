@@ -37,6 +37,7 @@ inline int Stack::pop() {
 }
 
 inline int Stack::top() const {
+  if (isEmpty()) throw StackEmptyError("Cannot get top element! Stack is empty.");
   return stackArray[current];
 }
 
@@ -45,5 +46,5 @@ inline bool Stack::isEmpty() const {
 }
 
 inline bool Stack::isFull() const {
-  return current == MAX_STACK_SIZE;
+  return current == MAX_STACK_SIZE-1;
 }

@@ -31,6 +31,12 @@ void test_stack_push() {
 void test_stack_pop() {
   Stack myStack;
 
+  try {
+    myStack.pop();
+    assert_notice(__func__, false);
+    assert(false);
+  } catch (const StackEmptyError& e) {}
+
   for (int i = 1; i <= 5; i++) 
     myStack.push(i*10);
 
@@ -38,12 +44,6 @@ void test_stack_pop() {
 
   for (int i = 5; i < 0; i--)
     assert(myStack.pop() == (i*10));
-
-  try {
-    myStack.pop();
-    assert_notice(__func__, false);
-    assert(false);
-  } catch (const StackEmptyError& e) {}
 
   assert_notice(__func__, true);
 }
@@ -63,7 +63,7 @@ void test_stack_top() {
 
   assert(myStack.top() == 45);
 
-  for (int i = 9; i >= 0; i++) {
+  for (int i = 9; i >= 0; i--) {
     assert(myStack.top() == (i*5));
     myStack.pop();
   }
