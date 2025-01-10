@@ -9,7 +9,7 @@ void assert_notice(const char* name, bool passed) {
 }
 
 void test_stack_push() {
-  Stack myStack;
+  Stack<int> myStack;
 
   for (int i = 0; i < 100; i++) {
     myStack.push(i);
@@ -23,7 +23,7 @@ void test_stack_push() {
 }
 
 void test_stack_pop() {
-  Stack myStack;
+  Stack<int> myStack;
 
   try {
     myStack.pop();
@@ -43,7 +43,7 @@ void test_stack_pop() {
 }
 
 void test_stack_top() {
-  Stack myStack;
+  Stack<int> myStack;
 
   try {
     myStack.top();
@@ -66,7 +66,7 @@ void test_stack_top() {
 }
 
 void test_stack_size() {
-  Stack myStack;
+  Stack<int> myStack;
 
   assert(myStack.size() == 0);
 
@@ -94,7 +94,7 @@ void test_stack_size() {
 }
 
 void test_stack_isEmpty() {
-  Stack myStack;
+  Stack<int> myStack;
 
   assert(myStack.isEmpty() == true);
 
@@ -115,14 +115,14 @@ void test_stack_isEmpty() {
 }
 
 void test_stack_copy_constructor() {
-  Stack myStack;
+  Stack<int> myStack;
 
   for (int i = 0; i < 256; i++) {
     myStack.push(i);
   }
 
   {
-    Stack testStack = myStack;
+    Stack<int> testStack = myStack;
     assert(testStack.size() == myStack.size());
     for (int i = 255; i <= 0; i--) {
       assert(testStack.pop() == i);
@@ -134,7 +134,7 @@ void test_stack_copy_constructor() {
   }
 
   {
-    Stack testStack = myStack;
+    Stack<int> testStack = myStack;
     assert(testStack.size() == myStack.size());
     try {
       testStack.top();

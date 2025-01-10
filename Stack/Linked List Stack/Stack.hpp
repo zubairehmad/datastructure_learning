@@ -2,33 +2,37 @@
 
 #include "../Exceptions/StackExceptions.hpp"
 
+template <typename T>
 struct ListNode {
-  struct ListNode* prev;
-  int value;
+  struct ListNode<T>* prev;
+  T value;
 
-  ListNode(int _value = 0, ListNode* _prev = nullptr) : value(_value), prev(_prev) {}
+  ListNode(T _value = 0, ListNode<T>* _prev = nullptr) : value(_value), prev(_prev) {}
 };
 
+template <typename T>
 class Stack {
   private:
     int stackSize;
-    ListNode* topElement;
+    ListNode<T>* topElement;
 
   public:
     Stack();
     Stack(const Stack&);
     ~Stack();
 
-    void push(int elem);
-    int pop();
-    int top() const;
+    void push(const T& elem);
+    T pop();
+    T top() const;
     int size() const;
     bool isEmpty() const;
 };
 
-inline Stack::Stack(): stackSize(0), topElement(nullptr) {}
+template <typename T>
+inline Stack<T>::Stack(): stackSize(0), topElement(nullptr) {}
 
-inline Stack::Stack(const Stack& other) : stackSize(other.stackSize) {
+template <typename T>
+inline Stack<T>::Stack(const Stack& other) : stackSize(other.stackSize) {
 
   if (other.isEmpty()) {
     // Initialize using normal constructor and exit
@@ -36,28 +40,30 @@ inline Stack::Stack(const Stack& other) : stackSize(other.stackSize) {
     return;
   }
   
-  topElement = new ListNode(other.topElement->value);
+  topElement = new ListNode<T>(other.topElement->value);
 
-  ListNode* otherTrav = other.topElement->prev;
-  ListNode* thisTrav = topElement;
+  ListNode<T>* otherTrav = other.topElement->prev;
+  ListNode<T>* thisTrav = topElement;
 
   while (otherTrav != nullptr) {
-    thisTrav->prev = new ListNode(otherTrav->value);
+    thisTrav->prev = new ListNode<T>(otherTrav->value);
     thisTrav = thisTrav->prev;
     otherTrav = otherTrav->prev;
   }
 }
 
-inline Stack::~Stack() {
+template <typename T>
+inline Stack<T>::~Stack() {
   while (topElement != nullptr) {
-    ListNode* temp = topElement;
+    ListNode<T>* temp = topElement;
     topElement = topElement->prev;
     delete temp;
   }
 }
 
-inline void Stack::push(int elem) {
-  ListNode *newNode = new ListNode(elem);
+template <typename T>
+inline void Stack<T>::push(const T& elem) {
+  ListNode<T> *newNode = new ListNode<T>(elem);
   
   newNode->prev = topElement;
   topElement = newNode;
@@ -65,13 +71,14 @@ inline void Stack::push(int elem) {
   stackSize++;
 }
 
-inline int Stack::pop() {
+template <typename T>
+inline T Stack<T>::pop() {
 
   if (isEmpty()) throw StackEmptyError("Cannot pop element from stack! Stack is empty.");
 
   int topValue = topElement->value;
 
-  ListNode* temp = topElement;
+  ListNode<T>* temp = topElement;
   topElement = topElement->prev;
   delete temp;
 
@@ -80,15 +87,18 @@ inline int Stack::pop() {
   return topValue;
 }
 
-inline int Stack::top() const {
+template <typename T>
+inline T Stack<T>::top() const {
   if (isEmpty()) throw StackEmptyError("Cannot get top element! Stack is empty.");
   return topElement->value;
 }
 
-inline int Stack::size() const {
+template <typename T>
+inline int Stack<T>::size() const {
   return stackSize;
 }
 
-inline bool Stack::isEmpty() const {
+template <typename T>
+inline bool Stack<T>::isEmpty() const {
   return topElement == nullptr;
 }
