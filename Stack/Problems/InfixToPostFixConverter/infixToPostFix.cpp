@@ -11,7 +11,7 @@ int main() {
 	cout << "\nWrite expression in infix form: ";
 	getline(cin, infixForm);
 
-	cout << "\nGiven expressionin postfix form: " << convertToPostfix(infixForm) << "\n";
+	cout << "\nGiven expression in postfix form: " << convertToPostfix(infixForm) << "\n";
 
 	return 0;
 }

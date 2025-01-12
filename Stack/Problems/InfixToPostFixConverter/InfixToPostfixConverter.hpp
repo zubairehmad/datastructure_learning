@@ -109,5 +109,9 @@ inline std::string convertToPostfix(const std::string& infixExpr) {
 		postfixExpr += " ";
 	}
 
+	if (!postfixExpr.empty()) {
+		postfixExpr.pop_back();	// Remove trailing ' ' character from the end
+	}
+
 	return postfixExpr;
 }
