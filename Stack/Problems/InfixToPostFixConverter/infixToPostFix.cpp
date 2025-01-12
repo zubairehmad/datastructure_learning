@@ -6,12 +6,12 @@ using namespace std;
 
 int main() {
 
-	string infixForm;
+  string infixForm;
 
-	cout << "\nWrite expression in infix form: ";
-	getline(cin, infixForm);
+  cout << "\nWrite expression in infix form: ";
+  getline(cin, infixForm);
 
-	cout << "\nGiven expression in postfix form: " << convertToPostfix(infixForm) << "\n";
+  cout << "\nGiven expression in postfix form: " << convertToPostfix(infixForm) << "\n";
 
-	return 0;
+  return 0;
 }
