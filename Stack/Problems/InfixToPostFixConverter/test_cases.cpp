@@ -5,7 +5,7 @@
 using namespace std;
 
 void assert_notice(const char* methodName, bool passed) {
-  cout << "\n" << methodName << " " << (passed? "true" : "false") << ".";
+  cout << "\n" << methodName << " " << (passed? "passed" : "failed") << ".";
 }
 
 void testCase1() {
@@ -39,7 +39,7 @@ void testCase6() {
 }
 
 void testCase7() {
-  assert(convertToPostfix("(3+2)-(4+59)/(492-12)*(31-2)") == "3 2 + 4 59 + 492 12 - / 31 2 - * -");
+  assert(convertToPostfix("(392+255)-(4420+5932)/(492310-120192)*(31938-212)") == "392 255 + 4420 5932 + 492310 120192 - / 31938 212 - * -");
   assert_notice(__func__, true);
 }
 
@@ -58,6 +58,51 @@ void testCase10() {
   assert_notice(__func__, true);
 }
 
+void testCase11() {
+  try {
+    convertToPostfix(")");
+    assert_notice(__func__, false);
+    assert(false);
+  } catch (const InvalidExpression& e) {}
+  assert_notice(__func__, true);
+}
+
+void testCase12() {
+  try {
+    convertToPostfix("192-324=329");
+    assert_notice(__func__, false);
+    assert(false);
+  } catch (const InvalidExpression& e) {}
+  assert_notice(__func__, true);
+}
+
+void testCase13() {
+  try {
+    convertToPostfix("291-21(32)");
+    assert_notice(__func__, false);
+    assert(false);
+  } catch (const InvalidExpression& e) {}
+  assert_notice(__func__, true);
+}
+
+void testCase14() {
+  try {
+    convertToPostfix("(((((((((((()-)/)*)-)+)+)-)/)*)/)-)");
+    assert_notice(__func__, false);
+    assert(false);
+  } catch (const InvalidExpression& e) {}
+  assert_notice(__func__, true);
+}
+
+void testCase15() {
+  try {
+    convertToPostfix("5 + (4 - 3 * (4 / 2");
+    assert_notice(__func__, false);
+    assert(false);
+  } catch (const InvalidExpression& e)  {}
+  assert_notice(__func__, true);
+}
+
 int main() {
 
   testCase1();
@@ -70,6 +115,11 @@ int main() {
   testCase8();
   testCase9();
   testCase10();
+  testCase11();
+  testCase12();
+  testCase13();
+  testCase14();
+  testCase15();
 
   cout << "\n\nAll test cases passed....\n";
 

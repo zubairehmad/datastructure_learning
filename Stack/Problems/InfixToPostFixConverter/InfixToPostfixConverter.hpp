@@ -1,33 +1,65 @@
+#include <iostream>
 #include <string>
+#include <unordered_map>
+#include <stdexcept>
 #include "../../Linked List Stack/Stack.hpp"
 
-struct _Operator {
-	char oper;
-	int precedence;
-
-	_Operator(const char& _oper, int _precedence) : oper(_oper), precedence(_precedence) {}
-
-	// Returns default predence of the operators
-	static int getDefaultPrecedence(char oper) {
-		switch (oper) {
-			case '+':
-			case '-':
-				return 1; 
-				break;
-			case '*':
-			case '/':
-				return 2;
-				break;
+template <typename T>
+std::ostream& operator << (std::ostream& os, const Stack<T>& stack) {
+	Stack<T> duplicate = stack;
+	if (duplicate.isEmpty()) os << "[]";
+	else {
+		os << "[" << duplicate.pop();
+		while (!duplicate.isEmpty()) {
+			os << ", " << duplicate.pop();
 		}
-		return 0;
+		os << "]";
 	}
-	
-	// Tell wheter given character is an operator
-	// or not
-	static bool isOperator(const char& ch) {
-		return ch == '+' || ch == '-' || ch == '*' || ch == '/';
-	}
+	return os;
+}
+
+class InvalidExpression : public std::invalid_argument {
+	public:
+		InvalidExpression(std::string message="") : std::invalid_argument(message) {}
 };
+
+/*
+	Tells whether operator 1 has precedence over operator 2
+*/
+inline bool _hasPrecedence(char op1, char op2) {
+	
+	// Brackets are not operators rather they are used to increase
+	// default precedence of the operators.
+	if (op1 == '(' || op2 == '(') return false;
+
+	static std::unordered_map<char, int> precedenceTable = {
+		{'+', 1},
+		{'-', 1},
+		{'*', 2},
+		{'/', 2}
+	};
+
+	// If the operator 1 has more precedence than operator 2, then return true.
+	// If they've equal precedence then also return true to ensure left to right associativity.
+	return precedenceTable[op1] >= precedenceTable[op2];
+}
+
+// Tell wheter given character is an operator or not
+inline bool _isOperator(const char& ch) {
+	return ch == '+' || ch == '-' || ch == '*' || ch == '/';
+}
+
+inline int _getPrecedence(char op) {
+	if (!_isOperator(op)) return 0;
+
+	static std::unordered_map<char, int> precedenceTable = {
+		{'+', 1},
+		{'-', 1},
+		{'*', 2},
+		{'/', 2}
+	};
+	return precedenceTable[op];
+}
 
 inline int _findNextNonDigitIndex(std::string str, int startingPos) {
 
@@ -48,34 +80,34 @@ inline int _findNextNonDigitIndex(std::string str, int startingPos) {
 // Converts given infix form to postfix form
 // Throws exception if malformed expression is passed
 inline std::string convertToPostfix(const std::string& infixExpr) {
-	
-	int highestPrecedence = _Operator::getDefaultPrecedence('/');
 
-	Stack<_Operator> operatorStack;
+	Stack<char> operatorStack;
 
 	std::string postfixExpr;
 
-	// Helps to encounter issues related to brackets such as unmatched brackets etc. 
-	int bracketCount = 0;
-
-	// The base precedence helps to calculate the precedence of the operator based on
-	// its position. For example, predence of + operator is greater in bracket but lesser
-	// when not in brackets. 
-	int basePrecedence = 0;
+	// To ensure correct expression is given
+	int openedBrackets = 0;
+	int numberOfOperators = 0;
+	int numberOfOperands = 0;
 
 	for (int i = 0; i < infixExpr.size(); i++) {
 
-		if (_Operator::isOperator(infixExpr[i])) {
+		// Ignore spaces or newlines
+		if (infixExpr[i] == ' ' || infixExpr[i] == '\n') continue;
 
-			// If there is already an operator which has greater precedence than the
-			// newly adding operator, then pop it from stack, and put in the result (postfixExpr)
-      if (!operatorStack.isEmpty() && operatorStack.top().precedence >= _Operator::getDefaultPrecedence(infixExpr[i])) {	
-				postfixExpr += operatorStack.pop().oper;
+		else if (_isOperator(infixExpr[i])) {
+
+			// If there is already an operator which has equal or greater precedence than the
+			// to be added operator, then pop it from stack, and put in the result (postfixExpr)
+      while (!operatorStack.isEmpty() && _hasPrecedence(operatorStack.top(), infixExpr[i])) {	
+				postfixExpr += operatorStack.pop();
 				postfixExpr += " ";
 			}
 
 			// Push the operator with its calculated predence 
-			operatorStack.push(_Operator(infixExpr[i], basePrecedence + _Operator::getDefaultPrecedence(infixExpr[i])));
+			operatorStack.push(infixExpr[i]);
+
+			numberOfOperators++;
 		} 
 
 		// If current index is at digit (a potential number),
@@ -85,27 +117,50 @@ inline std::string convertToPostfix(const std::string& infixExpr) {
 
 			postfixExpr += infixExpr.substr(i, nextNonDigitIndex == -1? std::string::npos : nextNonDigitIndex - i) + ' ';
 
+			numberOfOperands++;
 			i = nextNonDigitIndex-1;
 		}
 
-    // A bracket is encountered, the base precedence of operators is  
-		// higher than any other operator
 		else if (infixExpr[i] == '(') {
-      bracketCount++;	
-			basePrecedence += highestPrecedence;
+			// Push the bracket onto stack so that any higher precedence operator in stack
+			// cannot get precedence over any operator in bracket
+			operatorStack.push(infixExpr[i]);
+			openedBrackets++;
 		}
 
-		// A bracket is ended, hence the base precedence is decreased
 		else if (infixExpr[i] == ')') {
-			bracketCount--;
-			basePrecedence -= highestPrecedence;
+
+			// Pop all operators until no matching ( is found
+			while (!operatorStack.isEmpty() && operatorStack.top() != '(') {
+				postfixExpr += operatorStack.pop();
+				postfixExpr += " ";
+			}
+
+			// There must be '(' remaining. If not then it means there is no matching (
+			if (operatorStack.isEmpty()) {
+				throw InvalidExpression("Cannot find matching '(' for ')' present at index: " + std::to_string(i));
+			}
+
+			// Also remove '(' from stack
+			operatorStack.pop();
+			openedBrackets--;
 		}
+
+		else {
+			throw InvalidExpression("Unknown character found: '" + std::string(1, infixExpr[i]) + "'");
+		}
+	}
+
+	if (openedBrackets != 0) {
+		throw InvalidExpression("There unmatched brackets!");
+	} else if (numberOfOperands != numberOfOperators+1) {
+		throw InvalidExpression("Number ");
 	}
 	
 	// All the operators with lowest predence should be included
 	// in the last
 	while (!operatorStack.isEmpty()) {
-		postfixExpr += operatorStack.pop().oper;
+		postfixExpr += operatorStack.pop();
 		postfixExpr += " ";
 	}
 
