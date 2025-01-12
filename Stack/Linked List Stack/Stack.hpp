@@ -76,7 +76,7 @@ inline T Stack<T>::pop() {
 
   if (isEmpty()) throw StackEmptyError("Cannot pop element from stack! Stack is empty.");
 
-  int topValue = topElement->value;
+  T topValue = topElement->value;
 
   ListNode<T>* temp = topElement;
   topElement = topElement->prev;
