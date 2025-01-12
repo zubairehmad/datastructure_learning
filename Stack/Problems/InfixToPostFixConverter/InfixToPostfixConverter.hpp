@@ -1,22 +1,7 @@
-#include <iostream>
 #include <string>
 #include <unordered_map>
 #include <stdexcept>
 #include "../../Linked List Stack/Stack.hpp"
-
-template <typename T>
-std::ostream& operator << (std::ostream& os, const Stack<T>& stack) {
-	Stack<T> duplicate = stack;
-	if (duplicate.isEmpty()) os << "[]";
-	else {
-		os << "[" << duplicate.pop();
-		while (!duplicate.isEmpty()) {
-			os << ", " << duplicate.pop();
-		}
-		os << "]";
-	}
-	return os;
-}
 
 class InvalidExpression : public std::invalid_argument {
 	public:
@@ -47,18 +32,6 @@ inline bool _hasPrecedence(char op1, char op2) {
 // Tell wheter given character is an operator or not
 inline bool _isOperator(const char& ch) {
 	return ch == '+' || ch == '-' || ch == '*' || ch == '/';
-}
-
-inline int _getPrecedence(char op) {
-	if (!_isOperator(op)) return 0;
-
-	static std::unordered_map<char, int> precedenceTable = {
-		{'+', 1},
-		{'-', 1},
-		{'*', 2},
-		{'/', 2}
-	};
-	return precedenceTable[op];
 }
 
 inline int _findNextNonDigitIndex(std::string str, int startingPos) {
@@ -154,7 +127,7 @@ inline std::string convertToPostfix(const std::string& infixExpr) {
 	if (openedBrackets != 0) {
 		throw InvalidExpression("There unmatched brackets!");
 	} else if (numberOfOperands != numberOfOperators+1) {
-		throw InvalidExpression("Number ");
+		throw InvalidExpression("Invalid expression given! It has irregular number of operands and operators!");
 	}
 	
 	// All the operators with lowest predence should be included
