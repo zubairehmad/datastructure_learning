@@ -24,11 +24,6 @@ inline bool _hasPrecedence(char op1, char op2) {
   return precedenceTable[op1] >= precedenceTable[op2];
 }
 
-// Tell wheter given character is an operator or not
-inline bool _isOperator(const char& ch) {
-  return ch == '+' || ch == '-' || ch == '*' || ch == '/';
-}
-
 // Converts given infix form to postfix form
 // Throws exception if malformed expression is passed
 inline std::string convertToPostfix(const std::string& infixExpr) {
@@ -47,7 +42,7 @@ inline std::string convertToPostfix(const std::string& infixExpr) {
     // Ignore spaces or newlines
     if (infixExpr[i] == ' ' || infixExpr[i] == '\n') continue;
 
-    else if (_isOperator(infixExpr[i])) {
+    else if (isOperator(infixExpr[i])) {
 
       // If there is already an operator which has equal or greater precedence than the
       // to be added operator, then pop it from stack, and put in the result (postfixExpr)
@@ -65,7 +60,7 @@ inline std::string convertToPostfix(const std::string& infixExpr) {
     // If current index is at digit (a potential number),
     // extract the number and start from next index after the number 
     else if (std::isdigit(infixExpr[i])) {
-       int nextNonDigitIndex = Helper::findNextNonDigitIndex(infixExpr, i);
+       int nextNonDigitIndex = findNextNonDigitIndex(infixExpr, i);
 
       postfixExpr += infixExpr.substr(i, nextNonDigitIndex == -1? std::string::npos : nextNonDigitIndex - i) + ' ';
 
