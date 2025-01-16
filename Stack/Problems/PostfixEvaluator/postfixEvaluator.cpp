@@ -9,14 +9,14 @@ int main() {
 
   string expr;
 
-  cout << "\nPlease enter postfix expression : ";
+  cout << "\nWrite expression in postfix form: ";
   getline(cin, expr);
 
   try {
     double answer = evaluatePostfix(expr);
-    cout << "\nAnswer : " << answer << "\n";
+    cout << "\nAnswer: " << answer << "\n";
   } catch (const exception& e) {
-    cout << "\nException Caught: " << e.what() << endl;
+    cout << "\nError Occured: " << e.what() << endl;
   }
 
   return 0;
