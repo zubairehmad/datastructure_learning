@@ -37,8 +37,8 @@ inline double evaluatePostfix(const std::string& postfixExpr) {
         throw InvalidExpression("Invalid expression is given!");
       }
 
-      int num2 = numberStack.pop();
-      int num1 = numberStack.pop();
+      double num2 = numberStack.pop();
+      double num1 = numberStack.pop();
 
       switch (postfixExpr[i]) {
         case '+':
@@ -54,7 +54,7 @@ inline double evaluatePostfix(const std::string& postfixExpr) {
           if (num2 == 0) {
             throw DivisionByZeroException();
           }
-          numberStack.push((double)num1 / num2);  // Ensure accurate division
+          numberStack.push(num1 / num2);  // Ensure accurate division
       }
     }
 
