@@ -1,24 +1,16 @@
 #pragma once
 
 #include "../Exceptions/List_Exceptions.hpp"
+#include "../ListNode/ListNode.hpp"
 #include <ostream>
-
-struct ListNode {
-
-  ListNode(int _value = 0, ListNode *_next = nullptr)
-      : value(_value), next(_next) {}
-
-  int value;
-  ListNode *next;
-};
 
 class List {
 private:
-  ListNode *head;            // It is the start (head) of the list
-  mutable ListNode *current; // It is the current pointer
+  ListNode<int> *head;            // It is the start (head) of the list
+  mutable ListNode<int> *current; // It is the current pointer
   int size;                  // Size of the list
 
-  ListNode *getPreviousElement() const;
+  ListNode<int> *getPreviousElement() const;
 
 public:
   List();
@@ -70,7 +62,7 @@ public:
   ~List();
 };
 
-inline ListNode *List::getPreviousElement() const {
+inline ListNode<int> *List::getPreviousElement() const {
 
   if (size == 0) {
     throw UninitializedListError(
@@ -81,7 +73,7 @@ inline ListNode *List::getPreviousElement() const {
   if (current == head)
     return nullptr;
 
-  ListNode *prevElem = head;
+  ListNode<int> *prevElem = head;
   while (prevElem->next != current) {
     prevElem = prevElem->next;
   }
@@ -98,12 +90,12 @@ inline List::List(const List &other) {
     return;
   }
 
-  head = new ListNode(other.head->value);
+  head = new ListNode<int>(other.head->elem);
   current = head;
-  ListNode *otherTrav = other.head->next;
+  ListNode<int> *otherTrav = other.head->next;
 
   while (otherTrav != nullptr) {
-    ListNode *temp = new ListNode(otherTrav->value);
+    ListNode<int> *temp = new ListNode<int>(otherTrav->elem);
     current->next = temp;
     current = current->next;
     otherTrav = otherTrav->next;
@@ -123,17 +115,17 @@ inline int List::get() const {
     throw UninitializedListError("There is no element in the list! Can't get "
                                  "value of current element...");
   }
-  return current->value;
+  return current->elem;
 }
 
-inline void List::add(const int &value) {
+inline void List::add(const int &elem) {
 
   if (size == 0) {
-    head = new ListNode();
-    head->value = value;
+    head = new ListNode<int>();
+    head->elem = elem;
     current = head;
   } else {
-    ListNode *newElem = new ListNode(value);
+    ListNode<int> *newElem = new ListNode<int>(elem);
 
     newElem->next = current->next;
     current->next = newElem;
@@ -152,13 +144,13 @@ inline void List::remove() {
     delete head;
     head = nullptr;
   } else {
-    ListNode *temp = current;
+    ListNode<int> *temp = current;
 
     if (current == head) {
       head = head->next;
       current = head;
     } else {
-      ListNode *prev = getPreviousElement();
+      ListNode<int> *prev = getPreviousElement();
       prev->next = current->next;
       current = (current->next == nullptr) ? prev : current->next;
     }
@@ -168,12 +160,12 @@ inline void List::remove() {
   size--;
 }
 
-inline void List::update(const int &value) {
+inline void List::update(const int &elem) {
   if (size == 0) {
     throw UninitializedListError("There is no element in the list! Cannot "
                                  "update value of current element...");
   }
-  current->value = value;
+  current->elem = elem;
 }
 
 inline void List::start() const {
@@ -220,12 +212,12 @@ inline bool List::back() const {
   return true;
 }
 
-inline bool List::find(const int &value) const {
-  ListNode *temp = head;
+inline bool List::find(const int &elem) const {
+  ListNode<int> *temp = head;
 
   for (int i = 0; i < size; i++) {
-    if (temp->value == value) {
-      // Move current pointer to the location at which, value is found
+    if (temp->elem == elem) {
+      // Move current pointer to the location at which, element is found
       current = temp;
       return true;
     }
@@ -240,7 +232,7 @@ inline std::ostream &operator<<(std::ostream &out, const List &list) {
   if (list.length() == 0) {
     out << "[]";
   } else {
-    ListNode *temp = list.current;
+    ListNode<int> *temp = list.current;
     list.start();
     out << "[" << list.get();
     while (list.next()) {
@@ -258,7 +250,7 @@ inline List::~List() {
   if (head != nullptr) {
     current = head;
     while (current != nullptr) {
-      ListNode *temp = current;
+      ListNode<int> *temp = current;
       current = current->next;
       delete temp;
     }
