@@ -58,6 +58,8 @@ inline Queue<T>::Queue(const Queue<T>& other) {
     rearPtr = temp;
     traversal = traversal->next;
   }
+
+  sizeOfQueue = other.sizeOfQueue;
 }
 
 template <typename T>
@@ -66,7 +68,7 @@ void Queue<T>::enqueue(const T& elem) {
     frontPtr = new ListNode<T>(elem);
     rearPtr = frontPtr;
   } else {
-    ListNode<T> newNode = ListNode<T>(elem);
+    ListNode<T>* newNode = new ListNode<T>(elem);
 
     rearPtr->next = newNode;
     rearPtr = rearPtr->next;
