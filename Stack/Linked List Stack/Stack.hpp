@@ -1,14 +1,7 @@
 #pragma once
 
 #include "../Exceptions/StackExceptions.hpp"
-
-template <typename T>
-struct ListNode {
-  struct ListNode<T>* prev;
-  T value;
-
-  ListNode(T _value = 0, ListNode<T>* _prev = nullptr) : value(_value), prev(_prev) {}
-};
+#include "../../List/ListNode/ListNode.hpp"
 
 template <typename T>
 class Stack {
@@ -40,15 +33,15 @@ inline Stack<T>::Stack(const Stack& other) : stackSize(other.stackSize) {
     return;
   }
   
-  topElement = new ListNode<T>(other.topElement->value);
+  topElement = new ListNode<T>(other.topElement->elem);
 
-  ListNode<T>* otherTrav = other.topElement->prev;
+  ListNode<T>* otherTrav = other.topElement->next;
   ListNode<T>* thisTrav = topElement;
 
   while (otherTrav != nullptr) {
-    thisTrav->prev = new ListNode<T>(otherTrav->value);
-    thisTrav = thisTrav->prev;
-    otherTrav = otherTrav->prev;
+    thisTrav->next = new ListNode<T>(otherTrav->elem);
+    thisTrav = thisTrav->next;
+    otherTrav = otherTrav->next;
   }
 }
 
@@ -56,7 +49,7 @@ template <typename T>
 inline Stack<T>::~Stack() {
   while (topElement != nullptr) {
     ListNode<T>* temp = topElement;
-    topElement = topElement->prev;
+    topElement = topElement->next;
     delete temp;
   }
 }
@@ -65,7 +58,7 @@ template <typename T>
 inline void Stack<T>::push(const T& elem) {
   ListNode<T> *newNode = new ListNode<T>(elem);
   
-  newNode->prev = topElement;
+  newNode->next = topElement;
   topElement = newNode;
 
   stackSize++;
@@ -76,10 +69,10 @@ inline T Stack<T>::pop() {
 
   if (isEmpty()) throw StackEmptyError("Cannot pop element from stack! Stack is empty.");
 
-  T topValue = topElement->value;
+  T topValue = topElement->elem;
 
   ListNode<T>* temp = topElement;
-  topElement = topElement->prev;
+  topElement = topElement->next;
   delete temp;
 
   stackSize--;
@@ -90,7 +83,7 @@ inline T Stack<T>::pop() {
 template <typename T>
 inline T Stack<T>::top() const {
   if (isEmpty()) throw StackEmptyError("Cannot get top element! Stack is empty.");
-  return topElement->value;
+  return topElement->elem;
 }
 
 template <typename T>
